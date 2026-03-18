@@ -5,20 +5,21 @@ import { motion } from "framer-motion";
 export const AnimatedUnderline = () => {
   return (
     <svg
-      className="absolute -bottom-2 left-0 w-full h-3 text-zinc-300 dark:text-zinc-600"
-      viewBox="0 0 200 12"
+      className="absolute -bottom-2 left-0 w-full h-3 text-zinc-950 dark:text-white opacity-40"
+      viewBox="0 0 100 10"
       fill="none"
       preserveAspectRatio="none"
     >
       <motion.path
-        d="M2 10C50 2 150 2 198 10"
+        d="M0 5 Q 25 0, 50 5 T 100 5"
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth="2.5"
         strokeLinecap="round"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
         transition={{
-          duration: 1.5,
+          duration: 1.2,
           ease: "easeInOut",
           delay: 0.5,
         }}

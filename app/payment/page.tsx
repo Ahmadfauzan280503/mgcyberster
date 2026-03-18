@@ -147,10 +147,10 @@ function PaymentContent() {
       
       <main className="max-w-6xl mx-auto pt-32 pb-24 px-6">
         <div className="mb-12">
-          <Link href="/cart" className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs font-black uppercase tracking-widest mb-6">
+          <Link href="/cart" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors text-xs font-black uppercase tracking-widest mb-6">
             <ArrowLeft size={16} /> Back to Cart
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tighter">Secure Payment</h1>
+          <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tighter text-zinc-900 dark:text-white">Secure Payment</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -163,9 +163,9 @@ function PaymentContent() {
                 {paymentMethods.map((method) => (
                   <button
                     key={method.id}
-                    onClick={() => setSelectedMethod(method.id)}
+                    onClick={() => setSelectedMethod(method.name)}
                     className={`relative p-6 rounded-[30px] border-2 text-left transition-all duration-300 overflow-hidden group
-                      ${selectedMethod === method.id 
+                      ${selectedMethod === method.name 
                         ? "border-[#BEF264] bg-white dark:bg-zinc-900 shadow-xl" 
                         : "border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 hover:border-zinc-300 dark:hover:border-zinc-700"}`}
                   >
@@ -173,13 +173,13 @@ function PaymentContent() {
                       <div className={`p-3 rounded-2xl ${method.color} ${method.border} border`}>
                         {method.icon}
                       </div>
-                      {selectedMethod === method.id && (
+                      {selectedMethod === method.name && (
                         <div className="bg-[#BEF264] rounded-full p-1">
                           <CheckCircle2 size={16} className="text-black" />
                         </div>
                       )}
                     </div>
-                    <h3 className="text-xl font-black uppercase tracking-tight mb-1">{method.name}</h3>
+                    <h3 className="text-xl font-black uppercase tracking-tight mb-1 text-zinc-900 dark:text-white">{method.name}</h3>
                     <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">{method.description}</p>
                     
                     {/* Hover Glow */}
@@ -192,7 +192,7 @@ function PaymentContent() {
               <div className="mt-12 p-8 rounded-[40px] bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
                 <div className="flex items-center gap-4 mb-4">
                   <ShieldCheck className="text-[#BEF264]" size={24} />
-                  <h4 className="text-sm font-black uppercase tracking-widest">Global Asset Protection</h4>
+                  <h4 className="text-sm font-black uppercase tracking-widest text-zinc-900 dark:text-white">Global Asset Protection</h4>
                 </div>
                 <p className="text-xs text-zinc-500 leading-relaxed font-medium uppercase tracking-widest opacity-80">
                   Pembayaran Anda diamankan dengan enkripsi tingkat militer (AES-256). 

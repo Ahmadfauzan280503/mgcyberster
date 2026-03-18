@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const validMethods = ['Transfer Bank', 'E-Wallet', 'Kartu Kredit'];
+    const validMethods = ['Crypto', 'Mastercard', 'BCA Prioritas', 'Bank Mandiri', 'Transfer Bank', 'E-Wallet', 'Kartu Kredit'];
     if (!paymentMethod || !validMethods.includes(paymentMethod)) {
       return NextResponse.json(
         { error: 'Metode pembayaran tidak valid' },

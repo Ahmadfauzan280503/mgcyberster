@@ -15,6 +15,7 @@ import {
 import { PointerHighlight } from "@/components/ui/pointer-highlight";
 import { AboutSection } from "@/components/AboutSection";
 import { ContactSection } from "@/components/ContactSection";
+import Footer from "@/components/Footer";
 
 
 
@@ -26,19 +27,19 @@ const fadeIn = {
 };
 
 const tooltipItems = [
-  { id: 1, name: "Anto Wijaya", designation: "Collector", image: "/car-1.jpg" },
-  { id: 2, name: "Siti Rahma", designation: "Enthusiast", image: "/car-2.jpg" },
-  { id: 3, name: "Budi Santoso", designation: "VVIP Client", image: "/car-3.jpg" },
-  { id: 4, name: "Rina Kartika", designation: "Reviewer", image: "/car-4.jpg" },
+  { id: 1, name: "Anto Wijaya", designation: "Collector", image: "/avatar/avatar-1.jpg" },
+  { id: 2, name: "Siti Rahma", designation: "Enthusiast", image: "/avatar/avatar-2.jpg" },
+  { id: 3, name: "Budi Santoso", designation: "VVIP Client", image: "/avatar/avatar-3.jpg" },
+  { id: 4, name: "Rina Kartika", designation: "Reviewer", image: "/avatar/avatar-4.jpg" },
 ];
 
 
 const heroCards = [
-  { img: "/car-1.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[18%] sm:w-[230px]", height: "h-[160px] sm:h-[220px]" },
-  { img: "/car-2.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[18%] sm:w-[230px]", height: "h-[220px] sm:h-[320px]" },
-  { img: "/car-3.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[18%] sm:w-[230px]", height: "h-[320px] sm:h-[480px]" },
-  { img: "/car-4.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[18%] sm:w-[230px]", height: "h-[220px] sm:h-[320px]" },
-  { img: "/car-5.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[18%] sm:w-[230px]", height: "h-[160px] sm:h-[220px]" },
+  { img: "/page-1.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "hidden sm:block w-[230px]", height: "h-[220px]" },
+  { img: "/page-2.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[28%] sm:w-[230px]", height: "h-[220px] sm:h-[320px]" },
+  { img: "/page-3.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[35%] sm:w-[230px]", height: "h-[320px] sm:h-[480px]" },
+  { img: "/page-4.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "w-[28%] sm:w-[230px]", height: "h-[220px] sm:h-[320px]" },
+  { img: "/page-5.jpg", color: "bg-zinc-100 dark:bg-zinc-800", width: "hidden sm:block w-[230px]", height: "h-[220px]" },
 ];
 
 
@@ -97,7 +98,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-radial-gradient from-transparent via-zinc-100/50 dark:via-zinc-950/50 to-white dark:to-zinc-950 pointer-events-none" />
 
         <motion.div
-          className="relative z-10 flex flex-col items-center text-center space-y-12 px-6 pt-24 pb-4"
+          className="relative z-10 flex flex-col items-center text-center space-y-16 px-6 pt-32 md:pt-48 pb-10"
           initial="initial"
           animate="animate"
           variants={fadeIn}
@@ -109,7 +110,7 @@ export default function Home() {
             <motion.div
               animate={{ y: [0, -15, 0], x: [0, 5, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-10 left-10 hidden xl:flex flex-col gap-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-[200px] text-left"
+              className="absolute top-5 -left-2 lg:-left-54 hidden lg:flex flex-col gap-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-[200px] text-left -rotate-3 transition-transform hover:rotate-0 duration-500"
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex gap-1">
@@ -131,7 +132,7 @@ export default function Home() {
             <motion.div
               animate={{ y: [0, 15, 0], x: [0, -5, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute top-60 left-22 hidden xl:flex flex-col gap-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-[200px] text-left"
+              className="absolute top-52 -left-20 lg:-left-30 hidden lg:flex flex-col gap-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-4 rounded-3xl shadow-4xl border border-zinc-200 dark:border-zinc-800 max-w-[200px] text-left -rotate-4 transition-transform hover:rotate-0 duration-500"
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex gap-1">
@@ -153,7 +154,7 @@ export default function Home() {
              <motion.div
               animate={{ y: [10, -10, 10] }}
               transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="absolute top-15 right-16 hidden xl:flex flex-col gap-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-[180px] text-left"
+              className="absolute top-10 -right-12 lg:-right-42 hidden lg:flex flex-col gap-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-[180px] text-left rotate-6 transition-transform hover:rotate-0 duration-500"
             >
               <div className="flex items-center justify-between mb-1">
                  <div className="flex gap-1">
@@ -171,14 +172,14 @@ export default function Home() {
               <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Aris</span>
             </motion.div>
 
-            <h1 className="text-5xl sm:text-7xl md:text-[75px] font-black tracking-tight leading-[1.1] uppercase text-zinc-950 dark:text-white">
-              Selamat Datang Di 
-              <br />
-              Showroom Mobil <span className="relative inline-block">
+            <h1 className="flex flex-col text-5xl sm:text-7xl md:text-[90px] font-black tracking-tighter leading-[1.0] text-zinc-950 dark:text-white">
+              <span>Selamat Datang Di</span>
+              <span className="opacity-40">Showroom Mobil</span>
+              <span className="relative inline-block">
                 MG Cyberster
+              <span className="text-[#BEF264] ml-2">.</span>
                 <AnimatedUnderline />
               </span>
-              <span className="text-[#BEF264] ml-2">.</span>
             </h1>
           </div>
 
@@ -235,7 +236,7 @@ export default function Home() {
         </motion.div>
 
         {/* Hero Image Grid — Neat "Rounded Box" cards with full-bleed images */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 w-full max-w-7xl mb-29 relative z-10">
+        <div className="flex items-center justify-center gap-3 sm:gap-4 w-full max-w-7xl mb-20 sm:mb-32 relative z-10 px-4">
           {heroCards.map((card, idx) => (
             <motion.div
               key={idx}
@@ -256,8 +257,8 @@ export default function Home() {
       </section>
 
       {/* =============== MAIN WRAPPER FOR CLASSES, QUOTE, AND FOOTER =============== */}
-      <section id="layanan" className="w-full bg-[#FFFFFF] dark:bg-zinc-950 py-10 sm:py-2 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto bg-[#000000] dark:bg-zinc-900 rounded-[10px] sm:rounded-[50px] border border-zinc-300/50 dark:border-zinc-800 p-8 sm:p-10 lg:p-16 relative overflow-hidden">
+      <section id="layanan" className="w-full bg-[#FFFFFF] dark:bg-zinc-950 py-12 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto bg-[#000000] dark:bg-zinc-900 rounded-[30px] sm:rounded-[60px] border border-zinc-300/50 dark:border-zinc-800 p-8 sm:p-12 lg:p-20 relative overflow-hidden">
           
           {/* Section Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start mb-12 gap-6">
@@ -330,7 +331,7 @@ export default function Home() {
             </PointerHighlight>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-10 sm:gap-20">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 md:gap-20 px-4">
             {browseBrands.map((brand) => (
               <motion.div
                 key={brand.name}
@@ -393,6 +394,9 @@ export default function Home() {
 
       {/* =============== CONTACT SECTION =============== */}
       <ContactSection />
+
+      {/* =============== FOOTER =============== */}
+      <Footer />
     </div>
   );
 }

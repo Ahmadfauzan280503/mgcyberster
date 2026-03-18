@@ -2,10 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, MessageCircle, Sparkles, HelpCircle, Wrench } from "lucide-react";
+import { X, Send, MessageCircle, Sparkles, HelpCircle, Wrench, Trash2 } from "lucide-react";
 
 interface Message {
-  id: number;
+  id: string; // Changed to string for unique IDs
   text: string;
   sender: "bot" | "user";
   timestamp: Date;
@@ -22,7 +22,7 @@ export default function CustomerServiceWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: 1,
+      id: "initial-msg",
       text: "Halo! 👋 Ingin langsung terhubung dengan tim MG Cyberster?\nKami siap membantu kebutuhan otomotif kamu kapan saja!",
       sender: "bot",
       timestamp: new Date(),
@@ -32,6 +32,8 @@ export default function CustomerServiceWidget() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const generateUID = () => `id-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,35 +52,53 @@ export default function CustomerServiceWidget() {
   const addMessage = (text: string, sender: "bot" | "user") => {
     setMessages((prev) => [
       ...prev,
-      { id: Date.now(), text, sender, timestamp: new Date() },
+      { id: generateUID(), text, sender, timestamp: new Date() },
     ]);
   };
 
   const getAIResponse = async (text: string, currentHistory: Message[]) => {
     setIsTyping(true);
     try {
+      // Clean history to only include essential fields for the API
+      const cleanHistory = currentHistory.slice(-10).map(({ text, sender }) => ({
+        text,
+        sender,
+      }));
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text,
-          history: currentHistory.slice(-10), // Kirim 10 pesan terakhir untuk konteks
+          history: cleanHistory,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        // Specific message for quota limit
+        if (response.status === 429) {
+          throw new Error("QUOTA_LIMIT");
+        }
         throw new Error(data.error || "Gagal menghubungi AI");
       }
 
       addMessage(data.text, "bot");
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Chat Error:", error);
-      addMessage(
-        "Maaf, sepertinya layanan AI kami sedang mengalami kendala. Silakan coba lagi nanti atau hubungi kami via telepon. 📞",
-        "bot"
-      );
+      
+      let errorMsg = "Maaf, sepertinya layanan AI kami sedang mengalami kendala. Silakan coba lagi nanti atau hubungi kami via telepon. 📞";
+      
+      const isQuotaError = 
+        (error instanceof Error && error.message === "QUOTA_LIMIT") || 
+        (typeof error === "object" && error !== null && ("status" in error) && (error as {status: number}).status === 429);
+      
+      if (isQuotaError) {
+        errorMsg = "Waduh, sepertinya antrean chat sedang penuh (Limit Kuota Terlampaui). 😅\n\nSilakan coba lagi dalam beberapa menit, atau hubungi tim sales kami di nomor WhatsApp: +62 821-7756-1275.";
+      }
+
+      addMessage(errorMsg, "bot");
     } finally {
       setIsTyping(false);
     }
@@ -88,23 +108,37 @@ export default function CustomerServiceWidget() {
     const trimmed = inputValue.trim();
     if (!trimmed || isTyping) return;
 
-    addMessage(trimmed, "user");
+    const userMsg: Message = { id: generateUID(), text: trimmed, sender: "user", timestamp: new Date() };
+    
+    setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
     
-    // Save current messages to history before state update finishes
-    const currentHistory = [...messages, { id: Date.now(), text: trimmed, sender: "user", timestamp: new Date() }] as Message[];
-    
+    // Use the updated history
+    const currentHistory = [...messages, userMsg];
     await getAIResponse(trimmed, currentHistory);
   };
 
   const handleQuickAction = async (label: string) => {
     if (isTyping) return;
     
-    addMessage(label, "user");
+    const userMsg: Message = { id: generateUID(), text: label, sender: "user", timestamp: new Date() };
+    setMessages((prev) => [...prev, userMsg]);
     
-    const currentHistory = [...messages, { id: Date.now(), text: label, sender: "user", timestamp: new Date() }] as Message[];
-    
+    const currentHistory = [...messages, userMsg];
     await getAIResponse(label, currentHistory);
+  };
+
+  const clearChat = () => {
+    if (confirm("Hapus seluruh percakapan?")) {
+      setMessages([
+        {
+          id: "initial-msg-reset",
+          text: "Percakapan telah dihapus. Ada lagi yang bisa saya bantu? 😊",
+          sender: "bot",
+          timestamp: new Date(),
+        },
+      ]);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -163,17 +197,28 @@ export default function CustomerServiceWidget() {
                 <h3 className="text-white text-sm font-bold tracking-tight">
                   MG Cyberster Specialist
                 </h3>
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#BEF264] flex items-center gap-1">
-                  <Sparkles size={10} /> AKTIF 24 JAM
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#BEF264] flex items-center gap-1">
+                    <Sparkles size={10} /> AKTIF 24 JAM
+                  </p>
+                </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors"
-                aria-label="Close chat"
-              >
-                <X size={16} className="text-zinc-400" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={clearChat}
+                  className="w-8 h-8 rounded-full bg-zinc-800/50 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 flex items-center justify-center transition-all"
+                  title="Hapus Chat"
+                >
+                  <Trash2 size={14} />
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors"
+                  aria-label="Close chat"
+                >
+                  <X size={16} className="text-zinc-400" />
+                </button>
+              </div>
             </div>
 
             {/* Messages Area */}
@@ -187,7 +232,7 @@ export default function CustomerServiceWidget() {
                   className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[80%] px-4 py-3 text-[13px] leading-relaxed whitespace-pre-line ${
+                    className={`max-w-[85%] px-4 py-3 text-[13px] leading-relaxed whitespace-pre-line ${
                       msg.sender === "user"
                         ? "bg-[#BEF264] text-black rounded-[20px] rounded-br-md font-medium"
                         : "bg-zinc-800/80 text-zinc-200 rounded-[20px] rounded-bl-md border border-zinc-700/50"
@@ -243,7 +288,7 @@ export default function CustomerServiceWidget() {
                 />
                 <button
                   onClick={handleSend}
-                  disabled={!inputValue.trim()}
+                  disabled={!inputValue.trim() || isTyping}
                   className="w-8 h-8 bg-[#BEF264] hover:bg-[#d4ff7a] disabled:bg-zinc-700 disabled:text-zinc-500 rounded-full flex items-center justify-center text-black transition-all active:scale-90 disabled:cursor-not-allowed"
                   aria-label="Send message"
                 >
@@ -255,7 +300,7 @@ export default function CustomerServiceWidget() {
         )}
       </AnimatePresence>
 
-      {/* Close button when panel is open */}
+      {/* Side close button for desktop */}
       <AnimatePresence>
         {isOpen && (
           <motion.button
@@ -264,7 +309,7 @@ export default function CustomerServiceWidget() {
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
             onClick={() => setIsOpen(false)}
-            className="fixed bottom-6 right-[calc(370px+2.5rem)] max-[430px]:hidden z-50 w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center shadow-xl transition-colors cursor-pointer"
+            className="fixed bottom-6 right-[412px] hidden lg:flex z-50 w-12 h-12 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-full items-center justify-center shadow-xl hover:bg-zinc-800 transition-colors"
             aria-label="Close chat"
           >
             <X size={20} className="text-zinc-300" />

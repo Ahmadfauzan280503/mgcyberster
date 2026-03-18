@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Iphone } from "@/components/ui/iphone";
+import { Iphone17Pro } from "@/components/ui/iphone-17-pro";
 import { Cover } from "@/components/ui/cover";
 
 export function ContactSection() {
@@ -12,13 +12,34 @@ export function ContactSection() {
     phone: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    // Add logic here for actual submission
-    alert("Terima kasih! Pesan Anda telah terkirim.");
-    setFormData({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+    setLoading(true);
+    setStatusMsg(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatusMsg({ type: "success", text: "Terima kasih! Pesan Anda telah terkirim ke email kami." });
+        setFormData({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+      } else {
+        setStatusMsg({ type: "error", text: data.error || "Gagal mengirim pesan. Silakan coba lagi." });
+      }
+    } catch {
+      setStatusMsg({ type: "error", text: "Terjadi kesalahan jaringan. Silakan coba lagi." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -34,7 +55,7 @@ export function ContactSection() {
               Contact <span className="text-blue-500">Us</span>
             </Cover>
           </h2>
-ter        </div>
+        </div>
 
         <div className="flex flex-col lg:flex-row bg-white dark:bg-zinc-900 rounded-[40px] shadow-2xl border border-zinc-200 dark:border-white/5 overflow-hidden transition-all duration-500 hover:shadow-blue-500/5">
           {/* Left Side: Form */}
@@ -119,23 +140,44 @@ ter        </div>
                 ></textarea>
               </div>
 
+              {/* Status Message */}
+              {statusMsg && (
+                <div className={`p-4 rounded-2xl text-sm font-bold ${
+                  statusMsg.type === "success" 
+                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" 
+                    : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+                }`}>
+                  {statusMsg.text}
+                </div>
+              )}
+
               <div className="flex justify-end pt-4">
                 <button
                   type="submit"
-                  className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-black uppercase tracking-widest px-10 py-5 rounded-[20px] hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all transform active:scale-95 shadow-xl shadow-blue-500/10"
+                  disabled={loading}
+                  className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-black uppercase tracking-widest px-10 py-5 rounded-[20px] hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-all transform active:scale-95 shadow-xl shadow-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send a Message
+                  {loading ? "Mengirim..." : "Send a Message"}
                 </button>
               </div>
             </form>
           </div>
 
-          {/* Right Side: 3D iPhone Mockup (Clean & Balanced) */}
+          {/* Right Side: 3D iPhone Mockup with dark mode glow */}
           <div className="w-full lg:w-[450px] relative flex items-center justify-center py-12 lg:py-0">
-            <div className="relative z-10 w-full max-w-[280px]">
-              <Iphone 
-                src="/mockups/user-screenshot.png" 
-                className="w-full drop-shadow-[0_25px_50px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_25px_50px_rgba(0,0,0,0.7)]"
+            {/* Dark mode background glow for iPhone visibility */}
+            <div className="absolute inset-0 hidden dark:flex items-center justify-center pointer-events-none">
+              <div className="w-[300px] h-[500px] bg-gradient-to-b from-blue-500/10 via-indigo-500/5 to-transparent rounded-full blur-3xl" />
+            </div>
+            <div className="absolute inset-0 hidden dark:block pointer-events-none"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(59,130,246,0.08) 0%, rgba(99,102,241,0.04) 40%, transparent 70%)",
+              }}
+            />
+            <div className="relative z-10 w-full max-w-[280px] xs:max-w-[320px] mx-auto scale-100 sm:scale-110 lg:scale-100">
+              <Iphone17Pro 
+                src="/mockups/walpaper.jpg" 
+                className="w-full drop-shadow-[0_35px_60px_rgba(0,0,0,0.5)] dark:drop-shadow-[0_35px_70px_rgba(59,130,246,0.3)]"
               />
             </div>
           </div>

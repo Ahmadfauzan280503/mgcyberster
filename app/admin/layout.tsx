@@ -5,9 +5,16 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { 
   IconLayoutDashboard, 
   IconArrowLeft,
-  IconShieldLock
+  IconShieldLock,
+  IconPackage,
+  IconReceipt,
+  IconSettings,
+  IconLogout,
+  IconCreditCard,
+  IconChevronRight
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/Logo";
 
@@ -17,10 +24,40 @@ const LogoSmall = () => {
       href="/"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <div className="h-5 w-6 bg-gradient-to-br from-blue-500 to-violet-600 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
     </Link>
   );
 };
+
+// Breadcrumb component
+function Breadcrumb() {
+  const pathname = usePathname();
+  const segments = pathname.split("/").filter(Boolean);
+  
+  const labels: Record<string, string> = {
+    admin: "Dashboard",
+    products: "Produk",
+    transactions: "Transaksi",
+    settings: "Settings",
+    credit: "Kredit",
+  };
+
+  return (
+    <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-400 mb-6">
+      <Link href="/admin" className="hover:text-neutral-600 dark:hover:text-neutral-200 transition-colors">
+        Admin
+      </Link>
+      {segments.slice(1).map((segment, i) => (
+        <React.Fragment key={i}>
+          <IconChevronRight className="w-3 h-3 text-neutral-300 dark:text-neutral-600" />
+          <span className="text-neutral-700 dark:text-neutral-200 font-semibold">
+            {labels[segment] || segment}
+          </span>
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
 
 export default function AdminLayout({
   children,
@@ -49,24 +86,34 @@ export default function AdminLayout({
 
       if (data.success) {
         setAuthorized(true);
-        // Optional: Save session in localStorage if needed, but for now simple state is fine
       } else {
         setError(data.error || "Gagal melakukan verifikasi");
       }
-    } catch (err) {
+    } catch {
       setError("Terjadi kesalahan jaringan");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleLogout = () => {
+    setAuthorized(false);
+    setPassword("");
+  };
+
   if (!authorized) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
-        <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 p-10 rounded-[40px] shadow-2xl">
+      <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 flex items-center justify-center p-6">
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 -left-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-violet-500/5 rounded-full blur-3xl" />
+        </div>
+        
+        <div className="w-full max-w-md bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/80 p-10 rounded-[32px] shadow-2xl relative">
           <div className="flex flex-col items-center text-center mb-8">
-            <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
-               <IconShieldLock className="text-blue-500 w-8 h-8" />
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-violet-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
+               <IconShieldLock className="text-white w-8 h-8" />
             </div>
             <h1 className="text-2xl font-black text-white uppercase tracking-tight">Admin Access</h1>
             <p className="text-zinc-500 text-sm mt-2 font-medium">Silakan masukkan password admin untuk melanjutkan.</p>
@@ -79,13 +126,13 @@ export default function AdminLayout({
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 p-4 rounded-2xl text-white outline-none focus:border-blue-500 transition-all text-center tracking-widest font-mono"
+                className="w-full bg-zinc-800/50 border border-zinc-700/50 p-4 rounded-2xl text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all text-center tracking-widest font-mono"
               />
               {error && <p className="text-red-500 text-xs font-bold text-center mt-2">{error}</p>}
             </div>
             <button 
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-blue-500 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:from-blue-500 hover:to-violet-500 transition-all shadow-xl shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Memproses..." : "Masuk Dashboard"}
             </button>
@@ -101,6 +148,34 @@ export default function AdminLayout({
       href: "/admin",
       icon: (
         <IconLayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Produk",
+      href: "/admin/products",
+      icon: (
+        <IconPackage className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Transaksi",
+      href: "/admin/transactions",
+      icon: (
+        <IconReceipt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Kredit",
+      href: "/admin/credit",
+      icon: (
+        <IconCreditCard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Settings",
+      href: "/admin/settings",
+      icon: (
+        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -130,13 +205,25 @@ export default function AdminLayout({
               ))}
             </div>
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-start gap-2 py-2 group/sidebar"
+            >
+              <IconLogout className="text-red-500 h-5 w-5 flex-shrink-0" />
+              {open && (
+                <span className="text-red-500 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block font-medium">
+                  Logout
+                </span>
+              )}
+            </button>
             <SidebarLink
               link={{
                 label: "Admin",
                 href: "#",
                 icon: (
-                   <div className="h-7 w-7 flex-shrink-0 rounded-full bg-blue-600 flex items-center justify-center text-white text-[10px] font-bold shadow-lg">
+                   <div className="h-7 w-7 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white text-[10px] font-bold shadow-lg">
                     AD
                    </div>
                 ),
@@ -146,6 +233,7 @@ export default function AdminLayout({
         </SidebarBody>
       </Sidebar>
       <main className="flex-1 overflow-y-auto p-4 md:p-10 bg-white dark:bg-neutral-950">
+        <Breadcrumb />
         {children}
       </main>
     </div>
