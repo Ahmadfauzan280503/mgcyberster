@@ -152,9 +152,18 @@ export const TextRevealCardDescription = ({
 };
 
 const Stars = () => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const randomMove = () => Math.random() * 4 - 2;
   const randomOpacity = () => Math.random();
   const random = () => Math.random();
+
+  if (!mounted) return <div className="absolute inset-0" />;
+
   return (
     <div className="absolute inset-0">
       {[...Array(80)].map((_, i) => (
