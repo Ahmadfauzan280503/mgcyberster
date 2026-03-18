@@ -151,39 +151,58 @@ export const TextRevealCardDescription = ({
   );
 };
 
+interface StarData {
+  top: string;
+  left: string;
+  opacity: number;
+  duration: number;
+  moveX: number;
+  moveY: number;
+}
+
 const Stars = () => {
   const [mounted, setMounted] = useState(false);
+  const [stars, setStars] = useState<StarData[]>([]);
 
   useEffect(() => {
-    setMounted(true);
+    const generatedStars = [...Array(80)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      opacity: Math.random(),
+      duration: Math.random() * 10 + 20,
+      moveX: Math.random() * 4 - 2,
+      moveY: Math.random() * 4 - 2,
+    }));
+    
+    // Using requestAnimationFrame to avoid synchronous setState lint warning
+    requestAnimationFrame(() => {
+      setStars(generatedStars);
+      setMounted(true);
+    });
   }, []);
-
-  const randomMove = () => Math.random() * 4 - 2;
-  const randomOpacity = () => Math.random();
-  const random = () => Math.random();
 
   if (!mounted) return <div className="absolute inset-0" />;
 
   return (
     <div className="absolute inset-0">
-      {[...Array(80)].map((_, i) => (
+      {stars.map((star, i) => (
         <motion.span
           key={`star-${i}`}
           animate={{
-            top: `calc(${random() * 100}% + ${randomMove()}px)`,
-            left: `calc(${random() * 100}% + ${randomMove()}px)`,
-            opacity: randomOpacity(),
+            top: `calc(${star.top} + ${star.moveY}px)`,
+            left: `calc(${star.left} + ${star.moveX}px)`,
+            opacity: star.opacity,
             scale: [1, 1.2, 0],
           }}
           transition={{
-            duration: random() * 10 + 20,
+            duration: star.duration,
             repeat: Infinity,
             ease: "linear",
           }}
           style={{
             position: "absolute",
-            top: `${random() * 100}%`,
-            left: `${random() * 100}%`,
+            top: star.top,
+            left: star.left,
             width: `2px`,
             height: `2px`,
             backgroundColor: "white",

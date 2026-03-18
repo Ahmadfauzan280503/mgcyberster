@@ -2,12 +2,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
 // Ambil API Key dari environment variable
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-
-// Model utama dan fallback — gemini-1.5-flash-latest sudah deprecated
+// Model utama dan fallback
 const PRIMARY_MODEL = "gemini-2.0-flash";
 const FALLBACK_MODELS = [
-  "gemini-2.0-flash-001",
+  "gemini-2.0-flash-exp",
   "gemini-1.5-flash", 
   "gemini-1.5-flash-8b", 
   "gemini-1.5-pro"
@@ -52,7 +50,7 @@ function formatHistory(history: { sender: string; text: string }[]) {
 }
 
 // Helper: coba kirim pesan dengan model tertentu
-async function tryModel(modelName: string, message: string, finalHistory: { role: string; parts: { text: string }[] }[]) {
+async function tryModel(genAI: GoogleGenerativeAI, modelName: string, message: string, finalHistory: { role: string; parts: { text: string }[] }[]) {
   const model = genAI.getGenerativeModel({
     model: modelName,
     systemInstruction: SYSTEM_PROMPT,
@@ -74,23 +72,32 @@ export async function POST(req: Request) {
   try {
     const { message, history } = await req.json();
 
-    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
       return NextResponse.json(
         { error: "Gemini API Key belum dikonfigurasi di .env" },
         { status: 500 }
       );
     }
 
-    const finalHistory = formatHistory(history || []);
+    // Inisialisasi SDK di dalam handler untuk memastikan env key terbaru digunakan
+    const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Coba model utama, lalu fallback jika 404 (not found) atau 429 (quota exceeded)
-    const modelsToTry = [PRIMARY_MODEL, ...FALLBACK_MODELS];
+    const finalHistory = formatHistory(history || []);
+    
+    // Model fallback lebih lengkap
+    const modelsToTry = [
+      PRIMARY_MODEL,
+      "gemini-1.5-flash", // Kadang lebih stabil jika v2 limit
+      ...FALLBACK_MODELS
+    ];
+    
     let lastError: unknown = null;
 
     for (const modelName of modelsToTry) {
       try {
         console.log(`[Chat API] Mencoba model: ${modelName}`);
-        const text = await tryModel(modelName, message, finalHistory);
+        const text = await tryModel(genAI, modelName, message, finalHistory);
         return NextResponse.json({ text });
       } catch (err: unknown) {
         lastError = err;

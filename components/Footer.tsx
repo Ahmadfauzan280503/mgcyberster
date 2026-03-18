@@ -45,23 +45,23 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative w-full bg-zinc-950 text-white overflow-hidden">
-      {/* Gradient top border */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+    <footer className="relative w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-950 dark:text-white overflow-hidden border-t border-zinc-200 dark:border-zinc-800">
+      {/* Gradient top border (Dark mode only) */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent opacity-0 dark:opacity-100" />
       
       {/* Background glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Newsletter Section */}
       <div className="relative max-w-7xl mx-auto px-6 pt-20 pb-12">
-        <div className="bg-gradient-to-br from-zinc-900 to-zinc-900/50 border border-zinc-800 rounded-3xl p-8 md:p-12 mb-16 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-black dark:bg-white dark:from-zinc-900 dark:to-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 md:p-12 mb-16 relative overflow-hidden shadow-sm dark:shadow-none">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
           <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-              <h3 className="text-2xl md:text-3xl font-bold tracking-tight">
-                Dapatkan Update <span className="text-blue-400">Terbaru</span>
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-white dark:text-black">
+                Dapatkan Update <span className="text-blue-600 dark:text-blue-400">Terbaru</span>
               </h3>
-              <p className="text-zinc-400 text-sm mt-2 max-w-md">
+              <p className="text-white dark:text-black text-sm mt-2 max-w-md">
                 Subscribe untuk mendapatkan informasi terbaru mengenai koleksi mobil dan penawaran eksklusif.
               </p>
             </div>
@@ -69,7 +69,7 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Email kamu..."
-                className="flex-1 md:w-72 bg-zinc-800/50 border border-zinc-700/50 px-5 py-3.5 rounded-xl text-sm text-white placeholder:text-zinc-500 outline-none focus:border-blue-500/50 transition-colors"
+                className="flex-1 md:w-72 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-700/50 px-5 py-3.5 rounded-xl text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all"
               />
               <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-colors whitespace-nowrap flex items-center gap-1.5 shadow-sm shadow-blue-500/20">
                 Subscribe
@@ -84,11 +84,11 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <span className="text-xl font-black tracking-tight">
-                MG<span className="text-blue-400">.</span>
+              <span className="text-xl font-black tracking-tight text-black dark:text-white">
+                MG Cyberster<span className="text-blue-600 dark:text-blue-400">.</span>
               </span>
             </Link>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6 max-w-xs">
+            <p className="text-black dark:text-white text-sm leading-relaxed mb-6 max-w-xs">
               Showroom mobil mewah dan supercar terpercaya di Indonesia. Pengalaman eksklusif untuk pecinta otomotif.
             </p>
             {/* Social Links */}
@@ -99,7 +99,7 @@ export default function Footer() {
                   href={social.href}
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-xl bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700/50 hover:border-zinc-600 transition-all"
+                  className="w-10 h-10 rounded-xl bg-black dark:bg-white border border-black dark:border-white flex items-center justify-center text-white dark:text-black hover:text-blue-600 dark:hover:text-white hover:bg-black dark:hover:bg-white hover:border-blue-200 dark:hover:border-zinc-600 transition-all shadow-sm dark:shadow-none"
                   aria-label={social.label}
                 >
                   <social.icon className="w-4 h-4" />
@@ -110,7 +110,7 @@ export default function Footer() {
                 href="#"
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-10 h-10 rounded-xl bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700/50 hover:border-zinc-600 transition-all"
+                className="w-10 h-10 rounded-xl bg-black dark:bg-white border border-black dark:border-white flex items-center justify-center text-white dark:text-black hover:text-blue-600 dark:hover:text-white hover:bg-black dark:hover:bg-white hover:border-blue-200 dark:hover:border-zinc-600 transition-all shadow-sm dark:shadow-none"
                 aria-label="X"
               >
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
@@ -122,13 +122,13 @@ export default function Footer() {
 
           {/* Layanan */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-5">Layanan</h4>
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white mb-5">Layanan</h4>
             <ul className="space-y-3">
               {footerLinks.layanan.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                    className="text-sm text-black dark:text-white transition-colors inline-flex items-center gap-1 group"
                   >
                     {link.label}
                     <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
@@ -140,13 +140,13 @@ export default function Footer() {
 
           {/* Produk */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-5">Produk</h4>
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white mb-5">Produk</h4>
             <ul className="space-y-3">
               {footerLinks.produk.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                    className="text-sm text-black dark:text-white transition-colors inline-flex items-center gap-1 group"
                   >
                     {link.label}
                     <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
@@ -158,13 +158,13 @@ export default function Footer() {
 
           {/* Perusahaan + Contact */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-5">Perusahaan</h4>
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white mb-5">Perusahaan</h4>
             <ul className="space-y-3 mb-8">
               {footerLinks.perusahaan.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-zinc-400 hover:text-white transition-colors inline-flex items-center gap-1 group"
+                    className="text-sm text-black dark:text-white transition-colors inline-flex items-center gap-1 group"
                   >
                     {link.label}
                     <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all" />
@@ -173,41 +173,41 @@ export default function Footer() {
               ))}
             </ul>
             
-            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Kontak</h4>
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-black dark:text-white mb-4">Kontak</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5">
-                <Mail className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-zinc-400">ahmadfauzan280503@gmail.com</span>
+                <Mail className="w-4 h-4 text-black dark:text-white flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-black dark:text-white">ahmadfauzan280503@gmail.com</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <Phone className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-zinc-400">+62 821 7756 1275</span>
+                <Phone className="w-4 h-4 text-black dark:text-white flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-black dark:text-white">+62 821 7756 1275</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-zinc-500 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-zinc-400">Kota Makassar, Sulawesi Selatan</span>
+                <MapPin className="w-4 h-4 text-black dark:text-white flex-shrink-0 mt-0.5" />
+                <span className="text-sm text-black dark:text-white">Kota Makassar, Sulawesi Selatan</span>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-zinc-800/50 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-zinc-500 text-center sm:text-left">
+        <div className="border-t border-zinc-200 dark:border-zinc-800/50 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-black dark:text-white text-center sm:text-left">
             © {new Date().getFullYear()} MG Cyberster Showroom. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+            <Link href="#" className="text-xs text-black dark:text-white hover:text-zinc-900 dark:hover:text-zinc-300 transition-colors">
               Kebijakan Privasi
             </Link>
-            <Link href="#" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+            <Link href="#" className="text-xs text-black dark:text-white hover:text-zinc-900 dark:hover:text-zinc-300 transition-colors">
               Syarat & Ketentuan
             </Link>
             <motion.button
               onClick={scrollToTop}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="w-9 h-9 rounded-xl bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700/50 transition-all"
+              className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50 flex items-center justify-center text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700/50 shadow-sm dark:shadow-none transition-all"
               aria-label="Back to top"
             >
               <ChevronUp className="w-4 h-4" />
