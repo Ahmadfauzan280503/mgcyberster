@@ -85,7 +85,7 @@ export async function POST(req: Request) {
 
     // Coba model utama, lalu fallback jika 404 (not found) atau 429 (quota exceeded)
     const modelsToTry = [PRIMARY_MODEL, ...FALLBACK_MODELS];
-    let lastError: any = null;
+    let lastError: unknown = null;
 
     for (const modelName of modelsToTry) {
       try {
@@ -118,12 +118,17 @@ export async function POST(req: Request) {
   } catch (error: unknown) {
     console.error("Gemini API Error Akhir:", error);
 
-    const status = (error as { status?: number })?.status;
-    const isQuotaError =
-      error instanceof Error &&
-      (error.message.includes("429") || error.message.includes("quota"));
+    const errorProxy = error as { status?: number; message?: string; response?: { status?: number } };
+    const status = errorProxy?.status || errorProxy?.response?.status;
+    const errorMessage = (error instanceof Error ? error.message : String(error)).toLowerCase();
 
-    if (status === 429 || isQuotaError) {
+    const isQuotaError = 
+      status === 429 || 
+      errorMessage.includes("429") || 
+      errorMessage.includes("quota") || 
+      errorMessage.includes("limit");
+
+    if (isQuotaError) {
       return NextResponse.json(
         { error: "Semua model AI sedang mencapai limit kuota (Error 429). Silakan tunggu sebentar atau hubungi admin." },
         { status: 429 }

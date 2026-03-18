@@ -77,28 +77,22 @@ export default function CustomerServiceWidget() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Specific message for quota limit
-        if (response.status === 429) {
-          throw new Error("QUOTA_LIMIT");
+        let errorMsg = "Maaf, sepertinya layanan AI kami sedang mengalami kendala. Silakan coba lagi nanti atau hubungi kami via telepon. 📞";
+        
+        if (response.status === 429 || data.error?.includes("429") || data.error?.includes("limit")) {
+          errorMsg = "Waduh, sepertinya antrean chat sedang penuh (Limit Kuota Terlampaui). 😅\n\nSilakan coba lagi dalam beberapa menit, atau hubungi tim sales kami di nomor WhatsApp: +62 821-7756-1275.";
+        } else if (data.error) {
+          errorMsg = data.error;
         }
-        throw new Error(data.error || "Gagal menghubungi AI");
+
+        addMessage(errorMsg, "bot");
+        return;
       }
 
       addMessage(data.text, "bot");
     } catch (error: unknown) {
       console.error("Chat Error:", error);
-      
-      let errorMsg = "Maaf, sepertinya layanan AI kami sedang mengalami kendala. Silakan coba lagi nanti atau hubungi kami via telepon. 📞";
-      
-      const isQuotaError = 
-        (error instanceof Error && error.message === "QUOTA_LIMIT") || 
-        (typeof error === "object" && error !== null && ("status" in error) && (error as {status: number}).status === 429);
-      
-      if (isQuotaError) {
-        errorMsg = "Waduh, sepertinya antrean chat sedang penuh (Limit Kuota Terlampaui). 😅\n\nSilakan coba lagi dalam beberapa menit, atau hubungi tim sales kami di nomor WhatsApp: +62 821-7756-1275.";
-      }
-
-      addMessage(errorMsg, "bot");
+      addMessage("Terjadi kesalahan koneksi. Silakan periksa jaringan Anda dan coba lagi.", "bot");
     } finally {
       setIsTyping(false);
     }
