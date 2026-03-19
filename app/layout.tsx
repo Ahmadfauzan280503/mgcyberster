@@ -16,8 +16,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MG Cyberster Showroom",
-  description: "Exclusive automotive showroom with premium collection.",
+  title: {
+    default: "MG Cyberster Showroom - Dealer Mobil Mewah & Sport Terbaik",
+    template: "%s | MG Cyberster Showroom"
+  },
+  description: "Selamat datang di dealer resmi MG Cyberster Indonesia. Temukan koleksi mobil mewah, sport car, dan hypercar eksklusif dengan pelayanan VVIP.",
+  keywords: ["showroom mobil", "dealer mobil mewah", "MG Cyberster Indonesia", "mobil sport Jakarta", "beli mobil mewah", "koleksi mobil sport"],
+  authors: [{ name: "MG Cyberster Team" }],
+  creator: "MG Cyberster",
+  publisher: "MG Cyberster Indonesia",
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: "https://mg-cyberster-showroom.com", // Placeholder
+    title: "MG Cyberster Showroom - Koleksi Mobil Mewah Eksklusif",
+    description: "Nikmati pengalaman membeli mobil mewah terbaik dengan koleksi MG Cyberster dan brand ternama lainnya.",
+    siteName: "MG Cyberster Showroom",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MG Cyberster Showroom",
+    description: "Dealer Mobil Mewah & Sport Terbaik di Indonesia",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 };
 
 import { Toaster } from "sonner";
@@ -29,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
           <CartProvider>

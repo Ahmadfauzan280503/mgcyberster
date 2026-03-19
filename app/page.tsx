@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Store, Zap, Wrench } from "lucide-react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import Script from "next/script";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { AnimatedUnderline } from "@/components/ui/animated-underline";
 import { ProductCard } from "@/components/ProductCard";
@@ -75,7 +76,7 @@ const browseBrands = [
   { name: "Porsche", img: "/brands/porsche.png" },
 ];
 
-const featuredProducts = [
+const DEFAULT_PRODUCTS = [
   { name: "BMW i8 Hybrid", image: "/produk-mobil/car-1.png", price: "Rp. 4.2M", status: "Available" },
   { name: "BMW M4 GT3", image: "/produk-mobil/car-2.png", price: "Rp. 6.5M", status: "Race Ready" },
   { name: "AMG GT Black", image: "/produk-mobil/car-3.png", price: "Rp. 5.8M", status: "Limited" },
@@ -87,9 +88,60 @@ const featuredProducts = [
   { name: "Porsche GT3 R", image: "/produk-mobil/car-9.png", price: "Rp. 12.5M", status: "Exotic" },
 ];
 
+import { useEffect, useState } from "react";
+
+interface Product {
+  name: string;
+  image: string;
+  price: string;
+  status: string;
+}
+
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("mgcyberster_products");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        const timer = setTimeout(() => {
+          setProducts(parsed);
+        }, 0);
+        return () => clearTimeout(timer);
+      } catch (e) {
+        console.error("Error parsing products from localStorage", e);
+      }
+    } else {
+      localStorage.setItem("mgcyberster_products", JSON.stringify(DEFAULT_PRODUCTS));
+    }
+  }, []);
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AutoShowroom",
+    "name": "MG Cyberster Showroom Indonesia",
+    "description": "Dealer mobil mewah dan sport car terbaik di Jakarta. Koleksi eksklusif MG Cyberster, Ferrari, Lamborghini, dan Porsche.",
+    "url": "https://mg-cyberster-showroom.com",
+    "telephone": "+62211234567",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Sudirman No. 1",
+      "addressLocality": "Jakarta",
+      "addressRegion": "DKI Jakarta",
+      "postalCode": "12190",
+      "addressCountry": "ID"
+    },
+    "openingHours": "Mo-Su 09:00-21:00",
+    "image": "https://mg-cyberster-showroom.com/hero-image.jpg"
+  };
+
   return (
     <div className="flex flex-col items-center bg-background text-foreground min-h-screen overflow-x-hidden">
+      <Script
+        id="showroom-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       {/* =============== HERO SECTION =============== */}
       <section className="w-full min-h-screen relative flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-zinc-950 transition-colors duration-500">
@@ -247,7 +299,7 @@ export default function Home() {
             >
               <Image
                 src={card.img}
-                alt={`Car ${idx + 1}`}
+                alt={`Koleksi Mobil Mewah MG Cyberster Showroom - Unit ${idx + 1}`}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -374,9 +426,9 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredProducts.map((product, idx) => (
+            {products.map((product, idx: number) => (
               <motion.div
-                key={product.name}
+                key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
